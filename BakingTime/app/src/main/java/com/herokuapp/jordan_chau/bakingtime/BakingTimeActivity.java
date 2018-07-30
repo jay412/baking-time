@@ -1,13 +1,159 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.LinearLayout;
+
+import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
+import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
+import com.herokuapp.jordan_chau.bakingtime.model.Step;
+import com.herokuapp.jordan_chau.bakingtime.util.NetworkUtility;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URL;
+import java.util.ArrayList;
 
 public class BakingTimeActivity extends AppCompatActivity {
+    private LinearLayout mLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_baking_time);
+        
+        mLayout = findViewById(R.id.baking_time_linear_layout);
+        
+        RecipeCardFragment recipeFragment = new RecipeCardFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
+
+        new GetOperation(this).execute("");
+    }
+
+    /**
+     * <h1>Get Operation</h1>
+     * <p> This is an AsyncTask class to perform a GET operation in the background
+     * Takes in a String parameter to display all movies with the specified api and sort parameter
+     * Returns an array of movie data to be formatted
+     */
+    private class GetOperation extends AsyncTask<String, Void, ArrayList<Recipe>> {
+        private ProgressDialog progressDialog;
+        private Context context;
+
+        private GetOperation(Context c) {
+            progressDialog = new ProgressDialog(c);
+            context = c;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //checks for internet connection before proceeding
+            if(!NetworkUtility.checkInternetConnection(context)) {
+                this.cancel(true);
+                NetworkUtility.showErrorMessage(mLayout);
+            }
+            else {
+                super.onPreExecute();
+
+                progressDialog.setTitle("Please wait ...");
+                progressDialog.show();
+            }
+        }
+
+        @Override
+        protected ArrayList<Recipe> doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
+            }
+            
+            URL recipeJSONUrl = NetworkUtility.buildURL();
+
+            try {
+                String jsonUserResponse = NetworkUtility.getHttpUrlResponse(recipeJSONUrl);
+
+                //Log.d("BTA: ", "json= " + jsonUserResponse);
+
+                return getRecipeStringsFromJson(jsonUserResponse);
+            } catch (Exception e) {
+                //Log.d("BTA: ", "can't get url response");
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Recipe> rData) {
+            progressDialog.dismiss();
+
+            if(rData != null) {
+                //movieAdapter = new MovieAdapter(getActivity(), mData);
+                //gridView.setAdapter(movieAdapter);
+                //Log.d("BTA: ", "rData size = " + rData.size());
+            } else {
+                NetworkUtility.showErrorMessage(mLayout);
+            }
+        }
+    }
+
+    private ArrayList<Recipe> getRecipeStringsFromJson(String json) throws JSONException {
+
+        JSONArray recipes = new JSONArray(json);
+
+        //all recipes
+        ArrayList<Recipe> parsedRecipeData = new ArrayList<>();
+        //for every recipe
+        for(int i = 0; i < recipes.length(); ++i) {
+
+            JSONObject currentRecipe = recipes.getJSONObject(i);
+
+            int id = currentRecipe.getInt("id");
+            String name = currentRecipe.getString("name");
+            int servings = currentRecipe.getInt("servings");
+            String image = currentRecipe.getString("image");
+
+            //ingredient array --> objects
+            JSONArray currentIngredients = currentRecipe.getJSONArray("ingredients");
+            ArrayList<Ingredient> ingredients = new ArrayList<>();
+
+            for(int j = 0; j < currentIngredients.length(); ++j) {
+                JSONObject currentIngredient = currentIngredients.getJSONObject(j);
+
+                int quantity = currentIngredient.getInt("quantity");
+                String measure = currentIngredient.getString("measure");
+                String ingredient = currentIngredient.getString("ingredient");
+
+                ingredients.add(new Ingredient(quantity, measure, ingredient));
+            }
+
+            //steps array --> objects
+            JSONArray currentSteps = currentRecipe.getJSONArray("steps");
+            ArrayList<Step> steps = new ArrayList<>();
+
+            for(int k = 0; k < currentSteps.length(); ++k) {
+                JSONObject currentStep = currentSteps.getJSONObject(k);
+
+                int stepID = currentStep.getInt("id");
+                String shortDescription = currentStep.getString("shortDescription");
+                String description = currentStep.getString("description");
+                String videoURL = currentStep.getString("videoURL");
+                String thumbnailURL = currentStep.getString("thumbnailURL");
+
+                steps.add(new Step(stepID, shortDescription, description, videoURL, thumbnailURL));
+            }
+
+            parsedRecipeData.add(new Recipe(id, name, ingredients, steps, servings, image));
+        }
+
+        return parsedRecipeData;
     }
 }
