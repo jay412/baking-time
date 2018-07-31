@@ -6,9 +6,12 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeCardAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
@@ -23,6 +26,8 @@ import java.util.ArrayList;
 
 public class BakingTimeActivity extends AppCompatActivity {
     private LinearLayout mLayout;
+    private RecyclerView mRecipeList;
+    private RecipeCardAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +35,18 @@ public class BakingTimeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_baking_time);
         
         mLayout = findViewById(R.id.baking_time_linear_layout);
-        
-        RecipeCardFragment recipeFragment = new RecipeCardFragment();
+        mRecipeList = findViewById(R.id.rv_recipe_cards);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecipeList.setLayoutManager(layoutManager);
 
-        fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
+        mRecipeList.setHasFixedSize(true);
+
+        //RecipeCardFragment recipeFragment = new RecipeCardFragment();
+
+        //FragmentManager fragmentManager = getSupportFragmentManager();
+
+        //fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
 
         new GetOperation(this).execute("");
     }
@@ -96,8 +107,8 @@ public class BakingTimeActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             if(rData != null) {
-                //movieAdapter = new MovieAdapter(getActivity(), mData);
-                //gridView.setAdapter(movieAdapter);
+                mAdapter = new RecipeCardAdapter(rData);
+                mRecipeList.setAdapter(mAdapter);
                 //Log.d("BTA: ", "rData size = " + rData.size());
             } else {
                 NetworkUtility.showErrorMessage(mLayout);
