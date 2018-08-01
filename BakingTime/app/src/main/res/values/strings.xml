@@ -2,4 +2,5 @@
     <string name="app_name">Baking Time</string>
     <string name="name_placeholder">Recipe Name</string>
     <string name="servings">Servings: </string>
+    <string name="detail_error_message">Error loading recipe, please try again</string>
 </resources>

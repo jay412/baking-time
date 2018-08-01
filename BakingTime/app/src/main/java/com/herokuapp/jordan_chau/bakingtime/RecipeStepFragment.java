@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class RecipeCardFragment extends Fragment {
+public class RecipeStepFragment extends Fragment {
 
-    public RecipeCardFragment() {
+    public RecipeStepFragment() {
 
     }
 

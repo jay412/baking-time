@@ -2,6 +2,7 @@ package com.herokuapp.jordan_chau.bakingtime;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeCardAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
@@ -24,10 +26,13 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class BakingTimeActivity extends AppCompatActivity {
+public class BakingTimeActivity extends AppCompatActivity implements RecipeCardAdapter.RecipeItemClickListener{
     private LinearLayout mLayout;
+
     private RecyclerView mRecipeList;
     private RecipeCardAdapter mAdapter;
+
+    private ArrayList<Recipe> mRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,13 @@ public class BakingTimeActivity extends AppCompatActivity {
         //fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
 
         new GetOperation(this).execute("");
+    }
+
+    @Override
+    public void onRecipeItemClicked(int clickedItemIndex) {
+        Intent i = new Intent(BakingTimeActivity.this, RecipeStepActivity.class);
+        i.putExtra("recipe", mRecipes.get(clickedItemIndex));
+        startActivity(i);
     }
 
     /**
@@ -107,9 +119,9 @@ public class BakingTimeActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             if(rData != null) {
-                mAdapter = new RecipeCardAdapter(rData);
+                mRecipes = rData;
+                mAdapter = new RecipeCardAdapter(rData, (RecipeCardAdapter.RecipeItemClickListener) context);
                 mRecipeList.setAdapter(mAdapter);
-                //Log.d("BTA: ", "rData size = " + rData.size());
             } else {
                 NetworkUtility.showErrorMessage(mLayout);
             }

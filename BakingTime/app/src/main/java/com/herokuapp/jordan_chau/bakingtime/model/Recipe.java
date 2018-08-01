@@ -1,8 +1,11 @@
 package com.herokuapp.jordan_chau.bakingtime.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class Recipe {
+public class Recipe implements Parcelable{
     private int id, servings;
     private String name, image;
     private ArrayList<Ingredient> ingredients;
@@ -17,6 +20,41 @@ public class Recipe {
         this.image = image;
     }
 
+    //Parcelable implemented methods & constructors
+    protected Recipe(Parcel in) {
+        id = in.readInt();
+        servings = in.readInt();
+        name = in.readString();
+        image = in.readString();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(servings);
+        dest.writeString(name);
+        dest.writeString(image);
+    }
+    //End of Parcelable implemented methods & constructors
+
+    //getters
     public String getName() {
         return name;
     }
@@ -24,4 +62,6 @@ public class Recipe {
     public int getServings() {
         return servings;
     }
+
+
 }

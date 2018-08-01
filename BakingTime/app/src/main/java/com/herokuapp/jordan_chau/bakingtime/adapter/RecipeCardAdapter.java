@@ -18,10 +18,12 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
 
     private int mNumberItems;
     private ArrayList<Recipe> mRecipes;
+    final private RecipeItemClickListener mOnClickListener;
 
-    public RecipeCardAdapter(ArrayList<Recipe> recipes) {
+    public RecipeCardAdapter(ArrayList<Recipe> recipes, RecipeItemClickListener listener) {
         mRecipes = recipes;
         mNumberItems = recipes.size();
+        mOnClickListener = listener;
     }
 
     @NonNull
@@ -53,7 +55,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
     }
 
 
-    class CardViewHolder extends RecyclerView.ViewHolder {
+    class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView recipeNameView, servingsView;
 
@@ -62,11 +64,22 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
 
             recipeNameView = itemView.findViewById(R.id.tv_recipe_name);
             servingsView = itemView.findViewById(R.id.tv_servings);
+            itemView.setOnClickListener(this);
         }
 
         void bind(String recipeName, String servings) {
             recipeNameView.setText(recipeName);
             servingsView.setText("Servings: " + servings);
         }
+
+        @Override
+        public void onClick(View v) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onRecipeItemClicked(clickedPosition);
+        }
+    }
+
+    public interface RecipeItemClickListener {
+        void onRecipeItemClicked(int clickedItemIndex);
     }
 }
