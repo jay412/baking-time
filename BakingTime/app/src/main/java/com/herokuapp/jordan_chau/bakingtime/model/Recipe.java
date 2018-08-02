@@ -64,4 +64,7 @@ public class Recipe implements Parcelable{
     }
 
 
+    public ArrayList<Step> getSteps() {
+        return steps;
+    }
 }

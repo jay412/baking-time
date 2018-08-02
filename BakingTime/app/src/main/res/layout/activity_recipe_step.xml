@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/recipe_step_fragment"
     android:name="com.herokuapp.jordan_chau.bakingtime.RecipeStepFragment">
 
-</fragment>
+</fragment> -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BakingTimeActivity"
+    android:id="@+id/recipe_step_container"
+    android:scaleType="centerInside">
+
+</FrameLayout>

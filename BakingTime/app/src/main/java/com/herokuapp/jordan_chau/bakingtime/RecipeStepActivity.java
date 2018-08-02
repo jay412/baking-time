@@ -2,17 +2,19 @@ package com.herokuapp.jordan_chau.bakingtime;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
 
 import java.util.ArrayList;
 
-public class RecipeStepActivity extends AppCompatActivity {
+public class RecipeStepActivity extends AppCompatActivity implements RecipeStepAdapter.RecipeStepClickListener{
     private LinearLayout mLayout;
     private Recipe mRecipe;
 
@@ -34,6 +36,16 @@ public class RecipeStepActivity extends AppCompatActivity {
 
         mRecipe = intent.getParcelableExtra("recipe");
         setTitle(mRecipe.getName());
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("steps", mRecipe.getSteps());
+
+        RecipeStepFragment stepFragment = new RecipeStepFragment();
+        stepFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction().add(R.id.recipe_step_container, stepFragment).commit();
     }
 
     @Override
@@ -53,5 +65,10 @@ public class RecipeStepActivity extends AppCompatActivity {
                 .make(mLayout, R.string.detail_error_message, Snackbar.LENGTH_LONG);
 
         snackbar.show();
+    }
+
+    @Override
+    public void onRecipeStepClicked(int clickedItemIndex) {
+        //TODO
     }
 }

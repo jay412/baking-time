@@ -40,6 +40,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         setContentView(R.layout.activity_baking_time);
         
         mLayout = findViewById(R.id.baking_time_linear_layout);
+        //recycler view
         mRecipeList = findViewById(R.id.rv_recipe_cards);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

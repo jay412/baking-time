@@ -50,4 +50,8 @@ public class Step implements Parcelable{
         dest.writeString(thumbnailURL);
     }
     //end of Parcelable
+
+    public String getShortDescription(){
+        return shortDescription;
+    }
 }
