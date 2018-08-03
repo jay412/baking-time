@@ -57,8 +57,8 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
             }
         }
 
-        //mAdapter = new RecipeStepAdapter(mSteps, this);
-        //mRecipeStepList.setAdapter(mAdapter);
+        mAdapter = new RecipeStepAdapter(mSteps, this);
+        mRecipeStepList.setAdapter(mAdapter);
 
         return rootView;
     }

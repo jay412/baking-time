@@ -4,14 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeCardAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
@@ -61,6 +58,8 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     public void onRecipeItemClicked(int clickedItemIndex) {
         Intent i = new Intent(BakingTimeActivity.this, RecipeStepActivity.class);
         i.putExtra("recipe", mRecipes.get(clickedItemIndex));
+        i.putExtra("step", mRecipes.get(clickedItemIndex).getSteps());
+        i.putExtra("ingredient", mRecipes.get(clickedItemIndex).getIngredients());
         startActivity(i);
     }
 

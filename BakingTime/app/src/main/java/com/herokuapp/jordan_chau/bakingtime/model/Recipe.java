@@ -67,4 +67,20 @@ public class Recipe implements Parcelable{
     public ArrayList<Step> getSteps() {
         return steps;
     }
+
+    public void setSteps(ArrayList<Step> s){
+        steps = s;
+    }
+
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(ArrayList<Ingredient> i){
+        ingredients = i;
+    }
+
+    public String getImage(){
+        return image;
+    }
 }

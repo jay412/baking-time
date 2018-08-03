@@ -6,11 +6,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
+import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
+import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
 
@@ -35,10 +38,16 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepA
         }
 
         mRecipe = intent.getParcelableExtra("recipe");
-        setTitle(mRecipe.getName());
+        mRecipe.setSteps(intent.<Step>getParcelableArrayListExtra("step"));
+        mRecipe.setIngredients(intent.<Ingredient>getParcelableArrayListExtra("ingredient"));
 
+        //set title
+        setTitle(mRecipe.getName());
+        //get steps
+        ArrayList<Step> steps = mRecipe.getSteps();
+        //send arguments to fragment
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("steps", mRecipe.getSteps());
+        bundle.putParcelableArrayList("steps", steps);
 
         RecipeStepFragment stepFragment = new RecipeStepFragment();
         stepFragment.setArguments(bundle);
