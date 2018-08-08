@@ -73,6 +73,7 @@ public class RecipeStepDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
+        //renable this later
+        //releasePlayer();
     }
 }

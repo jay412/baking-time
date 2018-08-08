@@ -1,5 +1,6 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -64,7 +65,16 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     @Override
     public void onRecipeStepClicked(int clickedItemIndex) {
         //TODO
-        Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
-        Log.d("RSF: ", "button clicked = " + clickedItemIndex);
+        //Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+        //Log.d("RSF: ", "button clicked = " + clickedItemIndex);
+
+        Intent i = new Intent(getActivity(), RecipeStepDetailActivity.class);
+        i.putExtra("video", mSteps.get(clickedItemIndex).getVideoURL());
+        i.putExtra("description", mSteps.get(clickedItemIndex).getDescription());
+
+        Log.d("RSF: ", "video url = " + mSteps.get(clickedItemIndex).getVideoURL());
+        Log.d("RSF: ", "description = " + mSteps.get(clickedItemIndex).getDescription());
+
+        startActivity(i);
     }
 }
