@@ -69,4 +69,10 @@ public class RecipeStepDetailFragment extends Fragment {
         mExoPlayer.release();
         mExoPlayer = null;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
 }
