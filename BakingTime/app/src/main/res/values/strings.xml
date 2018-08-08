@@ -5,4 +5,7 @@
     <string name="servings">Servings: </string>
     <string name="detail_error_message">Error loading recipe, please try again</string>
     <string name="ingredients">Ingredients</string>
+
+    <string name="previous_step">Previous Step</string>
+    <string name="next_step">Next Step</string>
 </resources>
