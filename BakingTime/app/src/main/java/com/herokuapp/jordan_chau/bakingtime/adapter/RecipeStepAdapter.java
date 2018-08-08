@@ -60,7 +60,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.St
             super(itemView);
 
             shortDescriptionBtn = itemView.findViewById(R.id.btn_short_description);
-            itemView.setOnClickListener(this);
+            shortDescriptionBtn.setOnClickListener(this);
         }
 
         void bind(String shortDescription) {

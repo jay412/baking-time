@@ -67,5 +67,6 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     public void onRecipeStepClicked(int clickedItemIndex) {
         //TODO
         Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+        Log.d("RSF: ", "button clicked = " + clickedItemIndex);
     }
 }
