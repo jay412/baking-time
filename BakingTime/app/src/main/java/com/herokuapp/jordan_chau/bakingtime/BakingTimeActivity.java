@@ -1,5 +1,6 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.widget.LinearLayout;
 
@@ -44,6 +47,8 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         mRecipeList = findViewById(R.id.rv_recipe_cards);
 
         //check device width
+        /* code below does not work, only checks for pixel width, not device width
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -52,6 +57,14 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         if(size.x >= 600) {
             mRecipeList.setLayoutManager(new GridLayoutManager(this, 3));
             //otherwise make it linear
+            Log.d("BTA: ", "width = " + size.x);
+        } else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mRecipeList.setLayoutManager(layoutManager);
+        } */
+
+        if(isTablet(this)) {
+            mRecipeList.setLayoutManager(new GridLayoutManager(this, 3));
         } else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             mRecipeList.setLayoutManager(layoutManager);
@@ -64,9 +77,11 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
         //fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
 
+        //retrieve recipes
         new GetOperation(this).execute("");
     }
 
+    //when recipe card/item is clicked
     @Override
     public void onRecipeItemClicked(int clickedItemIndex) {
         Intent i = new Intent(BakingTimeActivity.this, RecipeStepActivity.class);
@@ -79,8 +94,6 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     /**
      * <h1>Get Operation</h1>
      * <p> This is an AsyncTask class to perform a GET operation in the background
-     * Takes in a String parameter to display all movies with the specified api and sort parameter
-     * Returns an array of movie data to be formatted
      */
     private class GetOperation extends AsyncTask<String, Void, ArrayList<Recipe>> {
         private ProgressDialog progressDialog;
@@ -141,6 +154,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         }
     }
 
+    //parse recipe strings from json
     private ArrayList<Recipe> getRecipeStringsFromJson(String json) throws JSONException {
 
         JSONArray recipes = new JSONArray(json);
@@ -191,5 +205,20 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         }
 
         return parsedRecipeData;
+    }
+
+    //check if device is a tablet
+    public static Boolean isTablet(Context context) {
+        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+
+        double width = displayMetrics.widthPixels / (double)displayMetrics.densityDpi;
+        double height = displayMetrics.heightPixels / (double)displayMetrics.densityDpi;
+
+        double screenDiagonal = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+
+        Log.i("BTA: ", "screenDiagonal = " + screenDiagonal);
+        return (screenDiagonal >= 7.0);
     }
 }

@@ -24,6 +24,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     private LinearLayout mLayout;
     private Recipe mRecipe;
     private ArrayList<Step> mSteps;
+    private ArrayList<Ingredient> mIngredients;
     private boolean mTwoPane;
 
     @Override
@@ -64,9 +65,11 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         setTitle(mRecipe.getName());
         //get steps
         mSteps = mRecipe.getSteps();
+        mIngredients = mRecipe.getIngredients();
         //send arguments to fragment
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("steps", mSteps);
+        bundle.putParcelableArrayList("ingredients", mIngredients);
 
         RecipeStepFragment stepFragment = new RecipeStepFragment();
         stepFragment.setArguments(bundle);
@@ -93,6 +96,29 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
                 .make(mLayout, R.string.detail_error_message, Snackbar.LENGTH_LONG);
 
         snackbar.show();
+    }
+
+    @Override
+    public void onInstructionSelected() {
+        if(mTwoPane) {
+            TextView mDescription = findViewById(R.id.tv_long_description);
+
+            String ingredientsList = "";
+            for(int x = 0; x < mIngredients.size(); ++x) {
+                Ingredient currentIngredient = mIngredients.get(x);
+
+                ingredientsList +=  x + 1 + ". " +
+                                    currentIngredient.getQuantity() + " " +
+                                    currentIngredient.getMeasure() + " " +
+                                    currentIngredient.getIngredient() + "\n\n";
+            }
+
+            mDescription.setText(ingredientsList);
+        } else {
+            Intent i = new Intent(RecipeStepActivity.this, RecipeStepDetailActivity.class);
+            i.putExtra("ingredients", mIngredients);
+            startActivity(i);
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         Context context = parent.getContext();
-        int layoutForRecipeItem = R.layout.fragment_recipe_card;
+        int layoutForRecipeItem = R.layout.recipe_card_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

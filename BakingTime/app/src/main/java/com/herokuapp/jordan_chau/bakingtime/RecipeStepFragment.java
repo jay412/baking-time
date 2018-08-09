@@ -15,18 +15,21 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
+import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
 
 public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.RecipeStepClickListener{
 
+    //private Button mIngredients;
     private RecyclerView mRecipeStepList;
     private RecipeStepAdapter mAdapter;
     OnStepClickListener mCallback;
 
     public interface OnStepClickListener {
         void onStepSelected(int position);
+        void onInstructionSelected();
     }
 
     @Override
@@ -50,6 +53,8 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
+        //mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
+
         //recycler view for recipe step
         mRecipeStepList = rootView.findViewById(R.id.rv_recipe_steps);
 
@@ -64,13 +69,16 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         else {
             //step arraylist
             mSteps = b.getParcelableArrayList("steps");
+            ArrayList<Ingredient> mIngreds = b.getParcelableArrayList("ingredients");
 
-            Button ingredients = rootView.findViewById(R.id.recipe_step_ingredients);
+            Button mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
             //TODO: add click listener to ingredient button
-
-            if (mSteps == null) {
-                Log.d("RSFrag: ", "mSteps is null");
-            }
+            mIngredients.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCallback.onInstructionSelected();
+                }
+            });
         }
 
         mAdapter = new RecipeStepAdapter(mSteps, this);
