@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
@@ -17,9 +20,11 @@ import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
 
-public class RecipeStepActivity extends AppCompatActivity implements RecipeStepAdapter.RecipeStepClickListener{
+public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnStepClickListener{
     private LinearLayout mLayout;
     private Recipe mRecipe;
+    private ArrayList<Step> mSteps;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,20 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepA
         //Creates the back arrow on the top left corner to return to MainActivity, DELETE PARENT?
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        if(findViewById(R.id.recipe_step_detail_fragment) != null) {
+            mTwoPane = true;
+
+            Button prevButton = findViewById(R.id.btn_previous_step);
+            Button nextButton = findViewById(R.id.btn_next_step);
+            prevButton.setVisibility(View.GONE);
+            nextButton.setVisibility(View.GONE);
+
+            //create new recipe step detail fragment if no saved instance
+
+        } else {
+            mTwoPane = false;
+        }
 
         mLayout = findViewById(R.id.recipe_step_linear_layout);
 
@@ -44,10 +63,10 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepA
         //set title
         setTitle(mRecipe.getName());
         //get steps
-        ArrayList<Step> steps = mRecipe.getSteps();
+        mSteps = mRecipe.getSteps();
         //send arguments to fragment
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("steps", steps);
+        bundle.putParcelableArrayList("steps", mSteps);
 
         RecipeStepFragment stepFragment = new RecipeStepFragment();
         stepFragment.setArguments(bundle);
@@ -77,7 +96,21 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepA
     }
 
     @Override
-    public void onRecipeStepClicked(int clickedItemIndex) {
-        //TODO
+    public void onStepSelected(int position) {
+        if(mTwoPane) {
+            TextView mDescription = findViewById(R.id.tv_long_description);
+
+            mDescription.setText(mSteps.get(position).getDescription());
+        }
+        else {
+            Intent i = new Intent(RecipeStepActivity.this, RecipeStepDetailActivity.class);
+            i.putExtra("steps", mSteps);
+            i.putExtra("position", position);
+
+            //Log.d("RSF: ", "video url = " + mSteps.get(position).getVideoURL());
+            //Log.d("RSF: ", "description = " + mSteps.get(position).getDescription());
+
+            startActivity(i);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,22 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
 
     private RecyclerView mRecipeStepList;
     private RecipeStepAdapter mAdapter;
+    OnStepClickListener mCallback;
+
+    public interface OnStepClickListener {
+        void onStepSelected(int position);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnStepClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnStepClickListener");
+        }
+    }
 
     private ArrayList<Step> mSteps;
     public RecipeStepFragment() {
@@ -64,17 +81,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
 
     @Override
     public void onRecipeStepClicked(int clickedItemIndex) {
-        //TODO
-        //Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
-        //Log.d("RSF: ", "button clicked = " + clickedItemIndex);
-
-        Intent i = new Intent(getActivity(), RecipeStepDetailActivity.class);
-        i.putExtra("video", mSteps.get(clickedItemIndex).getVideoURL());
-        i.putExtra("description", mSteps.get(clickedItemIndex).getDescription());
-
-        Log.d("RSF: ", "video url = " + mSteps.get(clickedItemIndex).getVideoURL());
-        Log.d("RSF: ", "description = " + mSteps.get(clickedItemIndex).getDescription());
-
-        startActivity(i);
+        //communicate with recipe step activity
+        mCallback.onStepSelected(clickedItemIndex);
     }
 }

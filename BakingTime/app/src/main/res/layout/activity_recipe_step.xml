@@ -11,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BakingTimeActivity"
+    tools:context=".RecipeStepActivity"
     android:id="@+id/recipe_step_container"
     android:scaleType="centerInside">
 

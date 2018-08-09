@@ -3,11 +3,14 @@ package com.herokuapp.jordan_chau.bakingtime;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.widget.LinearLayout;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeCardAdapter;
@@ -40,11 +43,21 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         //recycler view
         mRecipeList = findViewById(R.id.rv_recipe_cards);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecipeList.setLayoutManager(layoutManager);
+        //check device width
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        //if width is greater than or equal to 600, make it a grid layout
+        if(size.x >= 600) {
+            mRecipeList.setLayoutManager(new GridLayoutManager(this, 3));
+            //otherwise make it linear
+        } else {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mRecipeList.setLayoutManager(layoutManager);
+        }
 
         mRecipeList.setHasFixedSize(true);
-
         //RecipeCardFragment recipeFragment = new RecipeCardFragment();
 
         //FragmentManager fragmentManager = getSupportFragmentManager();
