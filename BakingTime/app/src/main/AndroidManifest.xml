@@ -21,10 +21,11 @@
         </activity>
         <activity
             android:name=".RecipeStepActivity"
-            android:parentActivityName=".BakingTimeActivity" />
+            android:parentActivityName=".BakingTimeActivity" >
+        </activity>
         <activity
-            android:name=".RecipeStepDetailActivity"
-            android:parentActivityName=".RecipeStepActivity" ></activity>
+            android:name=".RecipeStepDetailActivity" >
+        </activity>
     </application>
 
 </manifest>

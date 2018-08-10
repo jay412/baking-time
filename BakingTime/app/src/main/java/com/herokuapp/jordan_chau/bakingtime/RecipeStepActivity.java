@@ -63,7 +63,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
 
         //set title
         setTitle(mRecipe.getName());
-        //get steps
+        //get steps and ingredients
         mSteps = mRecipe.getSteps();
         mIngredients = mRecipe.getIngredients();
         //send arguments to fragment
@@ -102,7 +102,10 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     public void onInstructionSelected() {
         if(mTwoPane) {
             TextView mDescription = findViewById(R.id.tv_long_description);
+            Button mPrevious = findViewById(R.id.btn_previous_step);
+            Button mNext = findViewById(R.id.btn_next_step);
 
+            //set up ingredients text
             String ingredientsList = "";
             for(int x = 0; x < mIngredients.size(); ++x) {
                 Ingredient currentIngredient = mIngredients.get(x);
@@ -114,8 +117,13 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             }
 
             mDescription.setText(ingredientsList);
+            //hide previous and next buttons
+            mPrevious.setVisibility(View.INVISIBLE);
+            mNext.setVisibility(View.INVISIBLE);
         } else {
+            //open recipe step detail activity
             Intent i = new Intent(RecipeStepActivity.this, RecipeStepDetailActivity.class);
+            i.putExtra("recipe_name", mRecipe.getName());
             i.putExtra("ingredients", mIngredients);
             startActivity(i);
         }
@@ -132,9 +140,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             Intent i = new Intent(RecipeStepActivity.this, RecipeStepDetailActivity.class);
             i.putExtra("steps", mSteps);
             i.putExtra("position", position);
-
-            //Log.d("RSF: ", "video url = " + mSteps.get(position).getVideoURL());
-            //Log.d("RSF: ", "description = " + mSteps.get(position).getDescription());
+            i.putExtra("recipe_name", mRecipe.getName());
 
             startActivity(i);
         }

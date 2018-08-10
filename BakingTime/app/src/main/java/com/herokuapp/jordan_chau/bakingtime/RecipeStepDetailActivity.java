@@ -1,13 +1,16 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
@@ -15,8 +18,8 @@ import java.util.ArrayList;
 public class RecipeStepDetailActivity extends AppCompatActivity {
     private TextView mDescription;
     private Button mPrevious, mNext;
-    //private String description;
     private ArrayList<Step> mSteps;
+    private ArrayList<Ingredient> mIngredients;
     private int position;
 
     @Override
@@ -37,11 +40,32 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             Log.d("RSDA: ", "intent error");
         }
 
-        mSteps = intent.getParcelableArrayListExtra("steps");
-        position = intent.getIntExtra("position", 0);
+        setTitle(intent.getStringExtra("recipe_name"));
 
-        mDescription.setText(mSteps.get(position).getDescription());
-        setUpButtons();
+        if(intent.getParcelableArrayListExtra("ingredients") != null) {
+            mIngredients = intent.getParcelableArrayListExtra("ingredients");
+
+            String ingredientsList = "";
+            for(int x = 0; x < mIngredients.size(); ++x) {
+                Ingredient currentIngredient = mIngredients.get(x);
+
+                ingredientsList +=  x + 1 + ". " +
+                        currentIngredient.getQuantity() + " " +
+                        currentIngredient.getMeasure() + " " +
+                        currentIngredient.getIngredient() + "\n\n";
+            }
+
+            mDescription.setText(ingredientsList);
+            mPrevious.setVisibility(View.INVISIBLE);
+            mNext.setVisibility(View.INVISIBLE);
+        } else if (intent.getParcelableArrayListExtra("steps") != null) {
+            mSteps = intent.getParcelableArrayListExtra("steps");
+            position = intent.getIntExtra("position", 0);
+
+            mDescription.setText(mSteps.get(position).getDescription());
+            //set up buttons for instructions?
+            setUpButtons();
+        }
     }
 
     private void previousStep() {
@@ -79,5 +103,17 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                 nextStep();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 }

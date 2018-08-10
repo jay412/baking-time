@@ -53,8 +53,6 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
-        //mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
-
         //recycler view for recipe step
         mRecipeStepList = rootView.findViewById(R.id.rv_recipe_steps);
 
@@ -69,10 +67,8 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         else {
             //step arraylist
             mSteps = b.getParcelableArrayList("steps");
-            ArrayList<Ingredient> mIngreds = b.getParcelableArrayList("ingredients");
 
             Button mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
-            //TODO: add click listener to ingredient button
             mIngredients.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
