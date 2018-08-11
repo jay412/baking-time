@@ -1,6 +1,7 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -20,8 +21,15 @@ import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Optional;
+
 public class RecipeStepActivity extends AppCompatActivity implements RecipeStepFragment.OnStepClickListener{
-    private LinearLayout mLayout;
+    @Nullable @BindView(R.id.recipe_step_linear_layout) LinearLayout mLayout;
+    @Nullable @BindView(R.id.btn_previous_step) Button mPrevious;
+    @Nullable @BindView(R.id.btn_next_step) Button mNext;
+    @Nullable @BindView(R.id.tv_long_description) TextView mDescription;
     private Recipe mRecipe;
     private ArrayList<Step> mSteps;
     private ArrayList<Ingredient> mIngredients;
@@ -32,6 +40,8 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step);
 
+        ButterKnife.bind(this);
+
         //Creates the back arrow on the top left corner to return to MainActivity, DELETE PARENT?
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -39,18 +49,14 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         if(findViewById(R.id.recipe_step_detail_fragment) != null) {
             mTwoPane = true;
 
-            Button prevButton = findViewById(R.id.btn_previous_step);
-            Button nextButton = findViewById(R.id.btn_next_step);
-            prevButton.setVisibility(View.GONE);
-            nextButton.setVisibility(View.GONE);
+            mPrevious.setVisibility(View.GONE);
+            mNext.setVisibility(View.GONE);
 
             //create new recipe step detail fragment if no saved instance
 
         } else {
             mTwoPane = false;
         }
-
-        mLayout = findViewById(R.id.recipe_step_linear_layout);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -101,10 +107,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     @Override
     public void onInstructionSelected() {
         if(mTwoPane) {
-            TextView mDescription = findViewById(R.id.tv_long_description);
-            Button mPrevious = findViewById(R.id.btn_previous_step);
-            Button mNext = findViewById(R.id.btn_next_step);
-
             //set up ingredients text
             String ingredientsList = "";
             for(int x = 0; x < mIngredients.size(); ++x) {
@@ -132,8 +134,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     @Override
     public void onStepSelected(int position) {
         if(mTwoPane) {
-            TextView mDescription = findViewById(R.id.tv_long_description);
-
             mDescription.setText(mSteps.get(position).getDescription());
         }
         else {

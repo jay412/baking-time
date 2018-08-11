@@ -23,8 +23,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
 public class RecipeStepDetailFragment extends Fragment {
     private Context context;
-    private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
 
     public RecipeStepDetailFragment() {
 
@@ -37,7 +35,7 @@ public class RecipeStepDetailFragment extends Fragment {
 
         context = rootView.getContext();
 
-        mPlayerView = rootView.findViewById(R.id.playerView);
+        //mPlayerView = rootView.findViewById(R.id.playerView);
 
         //load question mark as background image until ...
         // mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.question_mark));
@@ -47,27 +45,6 @@ public class RecipeStepDetailFragment extends Fragment {
         //initializePlayer(uri);
 
         return rootView;
-    }
-
-    private void initializePlayer(Uri mediaUri) {
-        if (mExoPlayer == null) {
-            //Create an instance of the ExoPlayer
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
-            //Prepare the MediaSource
-            //String userAgent = ...;
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(context, null), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-        }
-    }
-
-    private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
     }
 
     @Override

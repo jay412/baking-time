@@ -29,10 +29,12 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class BakingTimeActivity extends AppCompatActivity implements RecipeCardAdapter.RecipeItemClickListener{
-    private LinearLayout mLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private RecyclerView mRecipeList;
+public class BakingTimeActivity extends AppCompatActivity implements RecipeCardAdapter.RecipeItemClickListener{
+    @BindView(R.id.baking_time_linear_layout) LinearLayout mLayout;
+    @BindView(R.id.rv_recipe_cards) RecyclerView mRecipeList;
     private RecipeCardAdapter mAdapter;
 
     private ArrayList<Recipe> mRecipes;
@@ -41,28 +43,11 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_baking_time);
-        
-        mLayout = findViewById(R.id.baking_time_linear_layout);
-        //recycler view
-        mRecipeList = findViewById(R.id.rv_recipe_cards);
+
+        //Butterknife binding
+        ButterKnife.bind(this);
 
         //check device width
-        /* code below does not work, only checks for pixel width, not device width
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        //if width is greater than or equal to 600, make it a grid layout
-        if(size.x >= 600) {
-            mRecipeList.setLayoutManager(new GridLayoutManager(this, 3));
-            //otherwise make it linear
-            Log.d("BTA: ", "width = " + size.x);
-        } else {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            mRecipeList.setLayoutManager(layoutManager);
-        } */
-
         if(isTablet(this)) {
             mRecipeList.setLayoutManager(new GridLayoutManager(this, 3));
         } else {
@@ -71,13 +56,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         }
 
         mRecipeList.setHasFixedSize(true);
-        //RecipeCardFragment recipeFragment = new RecipeCardFragment();
 
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-
-        //fragmentManager.beginTransaction().add(R.id.recipe_card_container, recipeFragment).commit();
-
-        //retrieve recipes
         new GetOperation(this).execute("");
     }
 
@@ -130,11 +109,8 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
             try {
                 String jsonUserResponse = NetworkUtility.getHttpUrlResponse(recipeJSONUrl);
 
-                //Log.d("BTA: ", "json= " + jsonUserResponse);
-
                 return getRecipeStringsFromJson(jsonUserResponse);
             } catch (Exception e) {
-                //Log.d("BTA: ", "can't get url response");
                 e.printStackTrace();
                 return null;
             }

@@ -21,8 +21,7 @@ import com.herokuapp.jordan_chau.bakingtime.model.Step;
 import java.util.ArrayList;
 
 public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.RecipeStepClickListener{
-
-    //private Button mIngredients;
+    
     private RecyclerView mRecipeStepList;
     private RecipeStepAdapter mAdapter;
     OnStepClickListener mCallback;
