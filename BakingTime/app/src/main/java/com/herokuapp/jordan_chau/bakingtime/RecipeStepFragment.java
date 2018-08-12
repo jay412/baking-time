@@ -1,7 +1,6 @@
 package com.herokuapp.jordan_chau.bakingtime;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
-import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
@@ -82,6 +79,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         return rootView;
     }
 
+    //TODO change toggle button color
     @Override
     public void onRecipeStepClicked(int clickedItemIndex) {
         //communicate with recipe step activity
