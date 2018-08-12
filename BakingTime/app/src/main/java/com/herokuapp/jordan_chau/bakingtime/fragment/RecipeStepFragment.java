@@ -1,4 +1,4 @@
-package com.herokuapp.jordan_chau.bakingtime;
+package com.herokuapp.jordan_chau.bakingtime.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.herokuapp.jordan_chau.bakingtime.R;
 import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeStepAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
@@ -22,6 +23,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     private RecyclerView mRecipeStepList;
     private RecipeStepAdapter mAdapter;
     OnStepClickListener mCallback;
+    private Button currentButton;
 
     public interface OnStepClickListener {
         void onStepSelected(int position);
@@ -58,31 +60,45 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
 
         Bundle b = getArguments();
         if(b == null) {
+            //TODO display error message
             Log.d("RSFrag: ", "bundle is null");
         }
         else {
             //step arraylist
             mSteps = b.getParcelableArrayList("steps");
 
-            Button mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
+            final Button mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
             mIngredients.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mCallback.onInstructionSelected();
+                    switchActiveButton(mIngredients);
                 }
             });
-        }
 
         mAdapter = new RecipeStepAdapter(mSteps, this);
         mRecipeStepList.setAdapter(mAdapter);
+        //some issues with recipes w/ 10+ steps
+        currentButton = mIngredients;
+        }
 
         return rootView;
     }
 
-    //TODO change toggle button color
     @Override
-    public void onRecipeStepClicked(int clickedItemIndex) {
+    public void onRecipeStepClicked(int clickedItemIndex, Button stepButton) {
+        switchActiveButton(stepButton);
         //communicate with recipe step activity
         mCallback.onStepSelected(clickedItemIndex);
+    }
+
+    private void switchActiveButton(Button newActive){
+        if(currentButton != null) {
+            currentButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            currentButton.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+        newActive.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        newActive.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        currentButton = newActive;
     }
 }

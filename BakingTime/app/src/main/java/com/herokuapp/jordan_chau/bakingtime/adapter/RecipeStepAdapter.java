@@ -75,11 +75,11 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.St
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onRecipeStepClicked(clickedPosition);
+            mOnClickListener.onRecipeStepClicked(clickedPosition, shortDescriptionBtn);
         }
     }
 
     public interface RecipeStepClickListener {
-        void onRecipeStepClicked(int clickedItemIndex);
+        void onRecipeStepClicked(int clickedItemIndex, Button stepButton);
     }
 }

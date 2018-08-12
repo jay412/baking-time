@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.herokuapp.jordan_chau.bakingtime.fragment.RecipeStepDetailFragment;
+import com.herokuapp.jordan_chau.bakingtime.fragment.RecipeStepFragment;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;

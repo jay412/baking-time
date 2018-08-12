@@ -1,4 +1,4 @@
-package com.herokuapp.jordan_chau.bakingtime;
+package com.herokuapp.jordan_chau.bakingtime.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.herokuapp.jordan_chau.bakingtime.R;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 

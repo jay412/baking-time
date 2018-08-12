@@ -6,18 +6,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.herokuapp.jordan_chau.bakingtime.fragment.RecipeStepDetailFragment;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
