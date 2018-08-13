@@ -1,10 +1,13 @@
 package com.herokuapp.jordan_chau.bakingtime.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.herokuapp.jordan_chau.bakingtime.BakingTimeActivity;
 import com.herokuapp.jordan_chau.bakingtime.R;
 
 /**
@@ -15,10 +18,16 @@ public class BakingWidgetProvider extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
+        //CharSequence widgetText = context.getString(R.string.appwidget_text);
+        // views.setTextViewText(R.id.appwidget_text, widgetText);
+
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget_provider);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+
+        Intent intent = new Intent(context, BakingTimeActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        views.setOnClickPendingIntent(R.id.widget_baking_image, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
