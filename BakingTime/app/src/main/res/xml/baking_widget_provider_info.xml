@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/baking_widget_provider"
     android:initialLayout="@layout/baking_widget_provider"
-    android:minHeight="160dp"
+    android:minHeight="320dp"
     android:minWidth="160dp"
     android:previewImage="@drawable/ic_cupcake"
     android:resizeMode="horizontal|vertical"

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,8 +27,10 @@ import butterknife.ButterKnife;
 
 public class BakingWidgetConfigActivity extends Activity implements RecipeCardAdapter.RecipeItemClickListener{
     @BindView(R.id.rv_widget_cards) RecyclerView mRecipeList;
+
     private RecipeCardAdapter mAdapter;
     private ArrayList<Recipe> mRecipes;
+    private SharedPreferences.Editor mEditor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,12 +43,13 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
         mRecipeList.setLayoutManager(layoutManager);
         mRecipeList.setHasFixedSize(true);
 
+        setUpSharedPreferences();
+
         new GetOperation(this).execute();
     }
 
     @Override
     public void onRecipeItemClicked(int clickedItemIndex) {
-        //do something
         showAppWidget(clickedItemIndex);
     }
 
@@ -54,7 +58,6 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
         appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
         //Retrieve widget ID from intent that launched the Activity
-
         Intent i = getIntent();
         Bundle bundle = i.getExtras();
         if(bundle != null) {
@@ -64,29 +67,44 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
                 finish();
             }
 
+            //Retrieve data from clicked button
             String recipeName = mRecipes.get(position).getName();
             ArrayList<Ingredient> mIngredients = mRecipes.get(position).getIngredients();
 
-            Bundle b = new Bundle();
-            b.putString("name", recipeName);
-            b.putParcelableArrayList("ingredients", mIngredients);
+            //Convert ingredients arraylist to string
+            String ingredientsList = "";
+            for (int x = 0; x < mIngredients.size(); ++x) {
+                Ingredient currentIngredient = mIngredients.get(x);
 
-            //TODO Perform the configuration and get an instance of the AppWidgetManager
+                ingredientsList += x + 1 + ". " +
+                        currentIngredient.getQuantity() + " " +
+                        currentIngredient.getMeasure() + " " +
+                        currentIngredient.getIngredient() + "\n\n";
+            }
+
+            //put strings into shared preferences
+            if(mEditor != null) {
+                mEditor.putString("name", recipeName);
+                mEditor.putString("ingredients", ingredientsList);
+                mEditor.commit();
+            }
+
+            //Perform the configuration and get an instance of the AppWidgetManager
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             BakingWidgetProvider.updateAppWidget(this, appWidgetManager, appWidgetId);
 
-            //TODO USE SharedPreferences
-
             Intent returnIntent = new Intent();
-
             returnIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            //returnIntent.putExtra("name", recipeName);
-            //returnIntent.putExtra("ingredients", mIngredients);
 
             setResult(RESULT_OK, returnIntent);
 
             finish();
         }
+    }
+
+    private void setUpSharedPreferences() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("widget_pref", MODE_PRIVATE);
+        mEditor = pref.edit();
     }
 
     private class GetOperation extends AsyncTask<String, Void, ArrayList<Recipe>> {
@@ -104,9 +122,6 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
 
         @Override
         protected ArrayList<Recipe> doInBackground(String... params) {
-            //if (params.length == 0) {
-              //  return null;
-            //}
 
             URL recipeJSONUrl = NetworkUtility.buildURL();
 

@@ -72,5 +72,6 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         super.onDestroy();
         //if(mExoPlayer != null)
             //releasePlayer();
+        //TODO change button highlight
     }
 }

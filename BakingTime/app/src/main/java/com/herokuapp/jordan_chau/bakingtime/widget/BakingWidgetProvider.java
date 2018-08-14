@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
@@ -18,43 +19,30 @@ import java.util.ArrayList;
  * Implementation of App Widget functionality.
  */
 public class BakingWidgetProvider extends AppWidgetProvider {
+    private static SharedPreferences pref;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        //CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // views.setTextViewText(R.id.appwidget_text, widgetText);
-
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget_provider);
 
-        /*
-        String recipeName = bundle.getString("name");
-        ArrayList<Ingredient> mIngredients = bundle.getParcelableArrayList("ingredients");
-
-        String ingredientsList = "";
-        for (int x = 0; x < mIngredients.size(); ++x) {
-            Ingredient currentIngredient = mIngredients.get(x);
-
-            ingredientsList += x + 1 + ". " +
-                    currentIngredient.getQuantity() + " " +
-                    currentIngredient.getMeasure() + " " +
-                    currentIngredient.getIngredient() + "\n\n";
-        }
-
+        pref = context.getSharedPreferences("widget_pref", Context.MODE_PRIVATE);
+        String recipeName = pref.getString("name", null);
+        String ingredientsList = pref.getString("ingredients", null);
         views.setTextViewText(R.id.tv_widget_recipe_name, recipeName);
-        views.setTextViewText(R.id.tv_widget_recipe_ingredients, ingredientsList); */
+        views.setTextViewText(R.id.tv_widget_recipe_ingredients, ingredientsList);
 
         //Intent intent = context.getIntent();
         //Intent intent = new Intent(context, BakingTimeActivity.class);
         //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
         //views.setOnClickPendingIntent(R.id.widget_baking_image, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
+    //widget will stay static
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -71,6 +59,15 @@ public class BakingWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+            //clear preferences when widget is deleted
+            pref = context.getSharedPreferences("widget_pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.clear();
+            editor.commit();
     }
 }
 
