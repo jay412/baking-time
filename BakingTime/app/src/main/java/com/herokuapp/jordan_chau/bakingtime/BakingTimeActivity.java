@@ -57,7 +57,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
         mRecipeList.setHasFixedSize(true);
 
-        new GetOperation(this).execute("");
+        new GetOperation(this).execute();
     }
 
     //when recipe card/item is clicked
@@ -100,9 +100,9 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
         @Override
         protected ArrayList<Recipe> doInBackground(String... params) {
-            if (params.length == 0) {
-                return null;
-            }
+            //if (params.length == 0) {
+                //return null;
+            //}
             
             URL recipeJSONUrl = NetworkUtility.buildURL();
 
@@ -131,7 +131,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     }
 
     //parse recipe strings from json
-    private ArrayList<Recipe> getRecipeStringsFromJson(String json) throws JSONException {
+    public static ArrayList<Recipe> getRecipeStringsFromJson(String json) throws JSONException {
 
         JSONArray recipes = new JSONArray(json);
 

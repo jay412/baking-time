@@ -23,6 +23,11 @@
             android:name=".RecipeStepActivity"
             android:parentActivityName=".BakingTimeActivity"></activity>
         <activity android:name=".RecipeStepDetailActivity"></activity>
+        <activity android:name=".widget.BakingWidgetConfigActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".widget.BakingWidgetProvider">
             <intent-filter>
