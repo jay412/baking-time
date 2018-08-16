@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +24,7 @@ import com.herokuapp.jordan_chau.bakingtime.adapter.RecipeCardAdapter;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Recipe;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
+import com.herokuapp.jordan_chau.bakingtime.test.AsyncIdlingResource;
 import com.herokuapp.jordan_chau.bakingtime.util.NetworkUtility;
 
 import org.json.JSONArray;
@@ -39,6 +44,8 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
     private ArrayList<Recipe> mRecipes;
 
+    @Nullable private AsyncIdlingResource mIdlingResource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +63,8 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         }
 
         mRecipeList.setHasFixedSize(true);
+        //testing
+        getIdlingResource();
 
         new GetOperation(this).execute();
     }
@@ -95,6 +104,10 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
                 progressDialog.setTitle("Please wait ...");
                 progressDialog.show();
+
+                if (mIdlingResource != null) {
+                    mIdlingResource.setIdleState(false);
+                }
             }
         }
 
@@ -126,6 +139,10 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
                 mRecipeList.setAdapter(mAdapter);
             } else {
                 NetworkUtility.showErrorMessage(mLayout);
+            }
+
+            if (mIdlingResource != null) {
+                mIdlingResource.setIdleState(true);
             }
         }
     }
@@ -196,5 +213,14 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
         Log.i("BTA: ", "screenDiagonal = " + screenDiagonal);
         return (screenDiagonal >= 7.0);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new AsyncIdlingResource();
+        }
+        return mIdlingResource;
     }
 }

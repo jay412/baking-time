@@ -10,4 +10,7 @@
     <string name="next_step">Next Step</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <!-- testing strings -->
+    <string name="test_rv_string">Cheesecake</string>
 </resources>
