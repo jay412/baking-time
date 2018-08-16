@@ -46,6 +46,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
     @Nullable private AsyncIdlingResource mIdlingResource;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -222,5 +223,14 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
             mIdlingResource = new AsyncIdlingResource();
         }
         return mIdlingResource;
+    }
+
+    @VisibleForTesting
+    static Intent createResultData(ArrayList<Recipe> recipes, int position) {
+        final Intent resultData = new Intent();
+        resultData.putExtra("recipe", recipes.get(position));
+        resultData.putExtra("step", recipes.get(position).getSteps());
+        resultData.putExtra("ingredient", recipes.get(position).getIngredients());
+        return resultData;
     }
 }
