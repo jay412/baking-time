@@ -69,10 +69,9 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
 
         if(savedInstanceState != null) {
             mRecipes = savedInstanceState.getParcelableArrayList("recipes");
-            mAdapter = new RecipeCardAdapter(mRecipes, (RecipeCardAdapter.RecipeItemClickListener) this);
+            mAdapter = new RecipeCardAdapter(mRecipes, this);
             mRecipeList.setAdapter(mAdapter);
         } else {
-
             new GetOperation(this).execute();
         }
     }
@@ -231,15 +230,6 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         }
         return mIdlingResource;
     }
-
-    /*@VisibleForTesting
-    static Intent createResultData(ArrayList<Recipe> recipes, int position) {
-        final Intent resultData = new Intent();
-        resultData.putExtra("recipe", recipes.get(position));
-        resultData.putExtra("step", recipes.get(position).getSteps());
-        resultData.putExtra("ingredient", recipes.get(position).getIngredients());
-        return resultData;
-    } */
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

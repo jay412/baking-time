@@ -21,13 +21,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class BakingTimeActivityTest {
 
-    /*TODO tests to make:
-        1) DONE - BakingTimeActivity - recyclerview --> click go to next activity
-        2) DONE RecipeStepActivity - ingredient button --> show ingredients
-        3) RecipeStepActivity - step button --> show Exoplayer, DONE show step description
-        4) RecipeStepActivity - previous & next button --> check step description
-     */
-
     private static final int LAST_ITEM = 3;
 
     @Rule
@@ -43,12 +36,6 @@ public class BakingTimeActivityTest {
        // Espresso.registerIdlingResources(mIdlingResource);
     }
 
-    //@Before
-    //public void stubAllExternalIntents() {
-        //need to stub intents before test run, external intents will be blocked
-        //intending(not(isInternal())).respondWith(new ActivityResult(Activity.RESULT_OK, null));
-    //}
-
     @Test
     public void scrollToLastItem_click_checkButtonDisplay() {
         // First scroll to the position that needs to be matched and click on it.
@@ -58,17 +45,5 @@ public class BakingTimeActivityTest {
         //String itemElementText = mActivityRule.getActivity().getResources().getString(R.string.test_rv_string);
 
         onView(withId(R.id.btn_recipe_step_ingredients)).check(matches(isDisplayed()));
-
-        /*intended(allOf(
-                hasAction(),
-                toPackage()
-        )); */
     }
-
-    //@After
-    //public void unregisterIdlingResource() {
-        //if (mIdlingResource != null) {
-            //Espresso.unregisterIdlingResources(mIdlingResource);
-        //}
-    //}
 }

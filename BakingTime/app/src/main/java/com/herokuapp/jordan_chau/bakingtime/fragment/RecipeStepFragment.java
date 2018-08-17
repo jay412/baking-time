@@ -60,7 +60,6 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
 
         Bundle b = getArguments();
         if(b == null) {
-            //TODO display error message
             Log.d("RSFrag: ", "bundle is null");
         }
         else {
@@ -100,5 +99,16 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         newActive.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         newActive.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         currentButton = newActive;
+    }
+
+    public void switchActiveButtonByPos(int position) {
+        //View view = mRecipeStepList.getChildAt(position);
+
+        RecyclerView.ViewHolder holder = mRecipeStepList.findViewHolderForAdapterPosition(position);
+        if(holder != null) {
+            Button newButton = holder.itemView.findViewById(R.id.btn_short_description)
+        }
+
+        switchActiveButton((Button) view);
     }
 }

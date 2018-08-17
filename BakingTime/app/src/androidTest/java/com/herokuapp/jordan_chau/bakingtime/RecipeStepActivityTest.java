@@ -95,5 +95,11 @@ public class RecipeStepActivityTest {
         //intending(hasComponent(hasShortClassName(".BakingTimeActivity")))
                 //.respondWith(new ActivityResult(Activity.RESULT_OK,
                         //BakingTimeActivity.createResultData(mRecipes, POSITION)));
+      //@After
+    //public void unregisterIdlingResource() {
+        //if (mIdlingResource != null) {
+            //Espresso.unregisterIdlingResources(mIdlingResource);
+        //}
+    //}
     */
 }

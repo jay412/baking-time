@@ -35,6 +35,8 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     private ArrayList<Ingredient> mIngredients;
     private boolean mTwoPane;
 
+    private RecipeStepFragment stepFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,21 +47,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         //Creates the back arrow on the top left corner to return to MainActivity, DELETE PARENT?
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        //get information from last activity first
-        Intent intent = getIntent();
-        if (intent == null) {
-            closeOnError();
-        }
-
-        //store in recipe object
-        mRecipe = intent.getParcelableExtra("recipe");
-        mRecipe.setSteps(intent.<Step>getParcelableArrayListExtra("step"));
-        mRecipe.setIngredients(intent.<Ingredient>getParcelableArrayListExtra("ingredient"));
-
-        //get steps and ingredients
-        mSteps = mRecipe.getSteps();
-        mIngredients = mRecipe.getIngredients();
 
         //check if two pane layout
         if(findViewById(R.id.recipe_step_detail_container) != null) {
@@ -82,19 +69,47 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             mTwoPane = false;
         }
 
-        //set title
-        setTitle(mRecipe.getName());
+        //create new recipe step fragment if no saved instance
+        if(savedInstanceState == null) {
 
-        //send arguments to fragment
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("steps", mSteps);
+            //get information from last activity first
+            Intent intent = getIntent();
+            if (intent == null) {
+                closeOnError();
+            }
 
-        RecipeStepFragment stepFragment = new RecipeStepFragment();
-        stepFragment.setArguments(bundle);
+            //store in recipe object
+            mRecipe = intent.getParcelableExtra("recipe");
+            mRecipe.setSteps(intent.<Step>getParcelableArrayListExtra("step"));
+            mRecipe.setIngredients(intent.<Ingredient>getParcelableArrayListExtra("ingredient"));
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+            //get steps and ingredients
+            mSteps = mRecipe.getSteps();
+            mIngredients = mRecipe.getIngredients();
 
-        fragmentManager.beginTransaction().add(R.id.recipe_step_container, stepFragment).commit();
+            //set title
+            setTitle(mRecipe.getName());
+
+            //send arguments to fragment
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("steps", mSteps);
+
+            stepFragment = new RecipeStepFragment();
+            stepFragment.setArguments(bundle);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction().add(R.id.recipe_step_container, stepFragment).commit();
+        }
+        else {
+            setTitle(savedInstanceState.getString("name"));
+            mRecipe = savedInstanceState.getParcelable("recipe");
+            mSteps = savedInstanceState.getParcelableArrayList("steps");
+            mIngredients = savedInstanceState.getParcelableArrayList("ingredients");
+
+            mRecipe.setSteps(mSteps);
+            mRecipe.setIngredients(mIngredients);
+        }
     }
 
     @Override
@@ -157,5 +172,26 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
 
             startActivity(i);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1) {
+            int position = data.getIntExtra("position", 0);
+            //Log.i("RSA: ", "position = " + position);
+            stepFragment.switchActiveButtonByPos(position);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("name", mRecipe.getName());
+        outState.putParcelable("recipe", mRecipe);
+        outState.putParcelableArrayList("steps", mRecipe.getSteps());
+        outState.putParcelableArrayList("ingredients", mRecipe.getIngredients());
     }
 }

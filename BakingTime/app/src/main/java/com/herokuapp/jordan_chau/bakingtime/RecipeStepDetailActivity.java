@@ -15,12 +15,16 @@ import java.util.ArrayList;
 
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
+    private RecipeStepDetailFragment detailFragment;
+    private String option;
+    private ArrayList<Step> mSteps;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step_detail);
 
-        //Creates the back arrow on the top left corner to return to MainActivity, DELETE PARENT?
+        //Creates the back arrow on the top left corner to return to MainActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -37,22 +41,27 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 
             //bundle.putString("option", "ingredients");
             bundle.putParcelableArrayList("ingredients", mIngredients);
+            option = "ingredients";
         } else {
-            ArrayList<Step> mSteps = intent.getParcelableArrayListExtra("steps");
+            mSteps = intent.getParcelableArrayListExtra("steps");
             int position = intent.getIntExtra("position", 0);
 
             //bundle.putString("option", "steps");
             bundle.putParcelableArrayList("steps", mSteps);
             bundle.putInt("position", position);
+
+            option = "steps";
         }
 
-        //send arguments to fragment
-        RecipeStepDetailFragment detailFragment = new RecipeStepDetailFragment();
-        detailFragment.setArguments(bundle);
+        if(savedInstanceState == null) {
+            //send arguments to fragment
+            detailFragment = new RecipeStepDetailFragment();
+            detailFragment.setArguments(bundle);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-        fragmentManager.beginTransaction().add(R.id.recipe_step_detail_container, detailFragment).commit();
+            fragmentManager.beginTransaction().add(R.id.recipe_step_detail_container, detailFragment).commit();
+        }
     }
 
     @Override
@@ -69,9 +78,12 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        //if(mExoPlayer != null)
-            //releasePlayer();
         //TODO change button highlight
+        Intent intent = new Intent();
+        intent.putExtra("position", detailFragment.getPosition());
+        setResult(RESULT_OK, intent);
+        //Log.i("RSDA: ", "position = " + detailFragment.getPosition());
+
+        super.onDestroy();
     }
 }

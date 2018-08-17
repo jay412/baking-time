@@ -57,7 +57,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.St
         return mNumberItems;
     }
 
-    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         Button shortDescriptionBtn;
 

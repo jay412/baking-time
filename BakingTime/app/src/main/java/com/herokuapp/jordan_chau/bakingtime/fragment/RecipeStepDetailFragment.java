@@ -2,6 +2,7 @@ package com.herokuapp.jordan_chau.bakingtime.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -47,9 +48,9 @@ public class RecipeStepDetailFragment extends Fragment {
     private String mVideo;
     private Boolean hideButtons = false;
 
-    public RecipeStepDetailFragment() {
+    private String option;
 
-    }
+    public RecipeStepDetailFragment() {}
 
     @Nullable
     @Override
@@ -62,6 +63,27 @@ public class RecipeStepDetailFragment extends Fragment {
         mNext = rootView.findViewById(R.id.btn_next_step);
         mPrevious = rootView.findViewById(R.id.btn_previous_step);
         mPlayerView = rootView.findViewById(R.id.playerView);
+
+        if(savedInstanceState != null) {
+            option = savedInstanceState.getString("option");
+
+            if(option.equals("ingredients")) {
+                mDescription.setText(savedInstanceState.getString("ingredients"));
+                hideButtons = true;
+            } else {
+                mSteps = savedInstanceState.getParcelableArrayList("steps");
+                position = savedInstanceState.getInt("position");
+                mVideo = mSteps.get(position).getVideoURL();
+
+                checkAndSetVideo(mVideo);
+                //restores where the player left off
+                mExoPlayer.seekTo(savedInstanceState.getInt("currentWindow"), savedInstanceState.getLong("playbackPosition"));
+
+                mDescription.setText(mSteps.get(position).getDescription());
+                setUpButtons();
+            }
+
+        } else {
 
         Bundle b = getArguments();
         if (b == null) {
@@ -86,6 +108,8 @@ public class RecipeStepDetailFragment extends Fragment {
                 mDescription.setText(ingredientsList);
                 hideButtons = true;
 
+                option = "ingredients";
+
             } else if (b.getParcelableArrayList("steps") != null) {
                 mSteps = b.getParcelableArrayList("steps");
                 position = b.getInt("position", 0);
@@ -94,7 +118,10 @@ public class RecipeStepDetailFragment extends Fragment {
                 checkAndSetVideo(mVideo);
                 mDescription.setText(mSteps.get(position).getDescription());
                 setUpButtons();
+
+                option = "steps";
             }
+        }
         }
 
         if(hideButtons) {
@@ -103,6 +130,21 @@ public class RecipeStepDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    private void setUpButtons() {
+        mPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                previousStep();
+            }
+        });
+        mNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextStep();
+            }
+        });
     }
 
     private void previousStep() {
@@ -133,21 +175,6 @@ public class RecipeStepDetailFragment extends Fragment {
             Snackbar sb = Snackbar.make(mLayout, "This is the last step!", Snackbar.LENGTH_LONG);
             sb.show();
         }
-    }
-
-    private void setUpButtons() {
-        mPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                previousStep();
-            }
-        });
-        mNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextStep();
-            }
-        });
     }
 
     public void hideButtons() {
@@ -192,6 +219,28 @@ public class RecipeStepDetailFragment extends Fragment {
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
+    }
+
+    public int getPosition(){
+        return position;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(option.equals("ingredients")) {
+            outState.putString("ingredients", mDescription.getText().toString());
+        } else {
+            outState.putParcelableArrayList("steps", mSteps);
+            outState.putInt("position", position);
+            outState.putString("video", mVideo);
+
+            outState.putInt("currentWindow", mExoPlayer.getCurrentWindowIndex());
+            outState.putLong("playbackPosition", mExoPlayer.getCurrentPosition());
+        }
+
+        outState.putString("option", option);
     }
 
     @Override
