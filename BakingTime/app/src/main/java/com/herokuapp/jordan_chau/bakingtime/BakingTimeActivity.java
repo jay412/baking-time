@@ -67,7 +67,14 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         //testing
         getIdlingResource();
 
-        new GetOperation(this).execute();
+        if(savedInstanceState != null) {
+            mRecipes = savedInstanceState.getParcelableArrayList("recipes");
+            mAdapter = new RecipeCardAdapter(mRecipes, (RecipeCardAdapter.RecipeItemClickListener) this);
+            mRecipeList.setAdapter(mAdapter);
+        } else {
+
+            new GetOperation(this).execute();
+        }
     }
 
     //when recipe card/item is clicked
@@ -225,12 +232,20 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
         return mIdlingResource;
     }
 
-    @VisibleForTesting
+    /*@VisibleForTesting
     static Intent createResultData(ArrayList<Recipe> recipes, int position) {
         final Intent resultData = new Intent();
         resultData.putExtra("recipe", recipes.get(position));
         resultData.putExtra("step", recipes.get(position).getSteps());
         resultData.putExtra("ingredient", recipes.get(position).getIngredients());
         return resultData;
+    } */
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(mRecipes != null)
+            outState.putParcelableArrayList("recipes", mRecipes);
     }
 }
