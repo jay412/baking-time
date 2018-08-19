@@ -207,7 +207,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     }
 
     //check if device is a tablet
-    private static Boolean isTablet(Context context) {
+    public static Boolean isTablet(Context context) {
         Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.herokuapp.jordan_chau.bakingtime.BakingTimeActivity;
 import com.herokuapp.jordan_chau.bakingtime.R;
 import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
 import com.herokuapp.jordan_chau.bakingtime.model.Step;
@@ -36,6 +38,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.herokuapp.jordan_chau.bakingtime.BakingTimeActivity.isTablet;
 
 public class RecipeStepDetailFragment extends Fragment {
     @BindView(R.id.recipe_step_detail_linear_layout) LinearLayout mLayout;
@@ -73,9 +77,13 @@ public class RecipeStepDetailFragment extends Fragment {
                 position = savedInstanceState.getInt("position");
                 mVideo = mSteps.get(position).getVideoURL();
 
+                makePlayerFullScreen();
                 checkAndSetVideo(mVideo);
                 //restores where the player left off
                 mExoPlayer.seekTo(savedInstanceState.getInt("currentWindow"), savedInstanceState.getLong("playbackPosition"));
+
+                //restore play when ready
+                mExoPlayer.setPlayWhenReady(savedInstanceState.getBoolean("playWhenReady"));
 
                 mDescription.setText(mSteps.get(position).getDescription());
                 setUpButtons();
@@ -111,6 +119,12 @@ public class RecipeStepDetailFragment extends Fragment {
                 mSteps = b.getParcelableArrayList("steps");
                 position = b.getInt("position", 0);
                 mVideo = mSteps.get(position).getVideoURL();
+
+                if(mVideo.equals("")) {
+                    //if there is no video URL, check thumbnail URL
+                    //there is only one thumbnail URL with .mp4 type
+                    mVideo = mSteps.get(position).getThumbnailURL();
+                }
 
                 checkAndSetVideo(mVideo);
                 mDescription.setText(mSteps.get(position).getDescription());
@@ -214,52 +228,35 @@ public class RecipeStepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
-        mExoPlayer = null;
+        if(mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    private void makePlayerFullScreen() {
+        //first check if device is a tablet or not
+        if(!isTablet(getActivity())) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //hide objects
+                mButtonLayout.setVisibility(View.GONE);
+                mDescription.setVisibility(View.GONE);
 
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //hide objects
-            mButtonLayout.setVisibility(View.GONE);
-            mDescription.setVisibility(View.GONE);
+                //hide action bar
+                if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                }
 
-            //hide action bar
-            if(((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+                //change layout container for exoplayer view
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
+                params.width = params.MATCH_PARENT;
+                params.height = params.MATCH_PARENT;
+                mPlayerView.setLayoutParams(params);
+
+                //make full screen and hide status bar
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
-
-            //change layout container for exoplayer view
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
-            params.width =  params.MATCH_PARENT;
-            params.height = params.MATCH_PARENT;
-            mPlayerView.setLayoutParams(params);
-
-            //make full screen and hide status bar
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            //unhide objects
-            mButtonLayout.setVisibility(View.VISIBLE);
-            mDescription.setVisibility(View.VISIBLE);
-
-            //show action bar
-            if(((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-            }
-
-            //set layout params to be original dimensions
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
-            params.width =  params.MATCH_PARENT;
-            params.height = 350;
-            mPlayerView.setLayoutParams(params);
-
-            //show status bar
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
     }
 
@@ -277,16 +274,28 @@ public class RecipeStepDetailFragment extends Fragment {
 
                 outState.putInt("currentWindow", mExoPlayer.getCurrentWindowIndex());
                 outState.putLong("playbackPosition", mExoPlayer.getCurrentPosition());
+                outState.putBoolean("playWhenReady", mExoPlayer.getPlayWhenReady());
             }
 
             outState.putString("option", option);
         }
     }
 
+    //release player early on API 23 and lower
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(mExoPlayer != null)
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
             releasePlayer();
+        }
+    }
+
+    //release player when activity is not visible on API 24 and higher
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
 }
