@@ -35,9 +35,8 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.St
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutForRecipeItem, parent, shouldAttachToParentImmediately);
-        StepViewHolder viewHolder = new StepViewHolder(view);
 
-        return viewHolder;
+        return new StepViewHolder(view);
     }
 
     @Override
@@ -57,11 +56,11 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.St
         return mNumberItems;
     }
 
-    public class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         Button shortDescriptionBtn;
 
-        public StepViewHolder(View itemView) {
+        StepViewHolder(View itemView) {
             super(itemView);
 
             shortDescriptionBtn = itemView.findViewById(R.id.btn_short_description);

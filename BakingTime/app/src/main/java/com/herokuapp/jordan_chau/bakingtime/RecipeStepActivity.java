@@ -3,12 +3,10 @@ package com.herokuapp.jordan_chau.bakingtime;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -34,8 +32,6 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
     private ArrayList<Step> mSteps;
     private ArrayList<Ingredient> mIngredients;
     private boolean mTwoPane;
-
-    private RecipeStepFragment stepFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +90,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("steps", mSteps);
 
-            stepFragment = new RecipeStepFragment();
+            RecipeStepFragment stepFragment = new RecipeStepFragment();
             stepFragment.setArguments(bundle);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -112,6 +108,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         }
     }
 
+    //handle back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -123,6 +120,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         return super.onOptionsItemSelected(item);
     }
 
+    //show error message
     private void closeOnError() {
         finish();
         Snackbar snackbar = Snackbar
@@ -131,8 +129,9 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         snackbar.show();
     }
 
+    //if ingredient button is selected
     @Override
-    public void onInstructionSelected() {
+    public void onIngredientSelected() {
         if(mTwoPane) {
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("ingredients", mIngredients);
@@ -151,6 +150,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         }
     }
 
+    //if step button is clicked
     @Override
     public void onStepSelected(int position) {
         if(mTwoPane) {
@@ -174,7 +174,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
         }
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -183,7 +183,7 @@ public class RecipeStepActivity extends AppCompatActivity implements RecipeStepF
             //Log.i("RSA: ", "position = " + position);
             stepFragment.switchActiveButtonByPos(position);
         }
-    }
+    } */
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

@@ -13,6 +13,4 @@
     android:layout_height="match_parent"
     tools:context=".RecipeStepActivity"
     android:id="@+id/recipe_step_container"
-    android:scaleType="centerInside">
-
-</FrameLayout>
+    android:scaleType="centerInside" />

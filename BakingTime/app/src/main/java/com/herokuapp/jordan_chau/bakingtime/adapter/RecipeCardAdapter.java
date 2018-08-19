@@ -36,9 +36,8 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutForRecipeItem, parent, shouldAttachToParentImmediately);
-        CardViewHolder viewHolder = new CardViewHolder(view);
 
-        return viewHolder;
+        return new CardViewHolder(view);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Ca
 
         TextView recipeNameView, servingsView;
 
-        public CardViewHolder(View itemView) {
+        CardViewHolder(View itemView) {
             super(itemView);
 
             recipeNameView = itemView.findViewById(R.id.tv_recipe_name);

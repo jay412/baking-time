@@ -12,19 +12,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <FrameLayout
-            android:id="@+id/recipe_card_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside">
-
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/rv_recipe_cards">
 
             </android.support.v7.widget.RecyclerView>
-        </FrameLayout>
     </LinearLayout>
 
 </ScrollView>

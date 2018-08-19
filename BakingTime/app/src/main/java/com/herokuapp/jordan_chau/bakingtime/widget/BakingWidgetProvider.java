@@ -1,19 +1,12 @@
 package com.herokuapp.jordan_chau.bakingtime.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.herokuapp.jordan_chau.bakingtime.BakingTimeActivity;
 import com.herokuapp.jordan_chau.bakingtime.R;
-import com.herokuapp.jordan_chau.bakingtime.model.Ingredient;
-
-import java.util.ArrayList;
 
 /**
  * Implementation of App Widget functionality.

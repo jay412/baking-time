@@ -1,7 +1,6 @@
 package com.herokuapp.jordan_chau.bakingtime.widget;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +27,6 @@ import butterknife.ButterKnife;
 public class BakingWidgetConfigActivity extends Activity implements RecipeCardAdapter.RecipeItemClickListener{
     @BindView(R.id.rv_widget_cards) RecyclerView mRecipeList;
 
-    private RecipeCardAdapter mAdapter;
     private ArrayList<Recipe> mRecipes;
     private SharedPreferences.Editor mEditor;
 
@@ -53,7 +51,7 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
         showAppWidget(clickedItemIndex);
     }
 
-    int appWidgetId;
+    private int appWidgetId;
     private void showAppWidget(int position) {
         appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -140,7 +138,7 @@ public class BakingWidgetConfigActivity extends Activity implements RecipeCardAd
 
             if(rData != null) {
                 mRecipes = rData;
-                mAdapter = new RecipeCardAdapter(rData, (RecipeCardAdapter.RecipeItemClickListener) context);
+                RecipeCardAdapter mAdapter = new RecipeCardAdapter(rData, (RecipeCardAdapter.RecipeItemClickListener) context);
                 mRecipeList.setAdapter(mAdapter);
             } else {
                 //NetworkUtility.showErrorMessage(mLayout);

@@ -21,8 +21,12 @@
         </activity>
         <activity
             android:name=".RecipeStepActivity"
-            android:parentActivityName=".BakingTimeActivity"></activity>
-        <activity android:name=".RecipeStepDetailActivity"></activity>
+            android:parentActivityName=".BakingTimeActivity">
+        </activity>
+        <activity
+            android:name=".RecipeStepDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
         <activity android:name=".widget.BakingWidgetConfigActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

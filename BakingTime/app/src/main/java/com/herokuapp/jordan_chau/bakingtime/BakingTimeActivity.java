@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -208,7 +207,7 @@ public class BakingTimeActivity extends AppCompatActivity implements RecipeCardA
     }
 
     //check if device is a tablet
-    public static Boolean isTablet(Context context) {
+    private static Boolean isTablet(Context context) {
         Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);

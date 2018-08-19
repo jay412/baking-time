@@ -1,16 +1,18 @@
 package com.herokuapp.jordan_chau.bakingtime.fragment;
 
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,18 +38,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipeStepDetailFragment extends Fragment {
-    private LinearLayout mLayout;
-    private TextView mDescription;
-    private Button mNext, mPrevious;
-    private SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.recipe_step_detail_linear_layout) LinearLayout mLayout;
+    @BindView(R.id.ll_step_buttons) LinearLayout mButtonLayout;
+    @BindView(R.id.exo_player_container) FrameLayout mPlayerContainer;
+    @BindView(R.id.tv_long_description) TextView mDescription;
+    @BindView(R.id.btn_previous_step) Button mPrevious;
+    @BindView(R.id.btn_next_step) Button mNext;
+    @BindView(R.id.playerView) SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
 
     private ArrayList<Step> mSteps;
-    private ArrayList<Ingredient> mIngredients;
     private int position;
     private String mVideo;
     private Boolean hideButtons = false;
-
     private String option;
 
     public RecipeStepDetailFragment() {}
@@ -57,12 +60,7 @@ public class RecipeStepDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step_detail, container, false);
 
-        //Butterknife binding does not work for fragments
-        mLayout = rootView.findViewById(R.id.recipe_step_detail_linear_layout);
-        mDescription = rootView.findViewById(R.id.tv_long_description);
-        mNext = rootView.findViewById(R.id.btn_next_step);
-        mPrevious = rootView.findViewById(R.id.btn_previous_step);
-        mPlayerView = rootView.findViewById(R.id.playerView);
+        ButterKnife.bind(this, rootView);
 
         if(savedInstanceState != null) {
             option = savedInstanceState.getString("option");
@@ -88,12 +86,11 @@ public class RecipeStepDetailFragment extends Fragment {
         Bundle b = getArguments();
         if (b == null) {
             //put another error message here later
-            Log.d("RSFrag: ", "bundle is null");
 
         } else {
 
             if (b.getParcelableArrayList("ingredients") != null) {
-                mIngredients = b.getParcelableArrayList("ingredients");
+                ArrayList<Ingredient> mIngredients = b.getParcelableArrayList("ingredients");
 
                 String ingredientsList = "";
                 for (int x = 0; x < mIngredients.size(); ++x) {
@@ -188,15 +185,16 @@ public class RecipeStepDetailFragment extends Fragment {
                 releasePlayer();
             }
             initializePlayer(Uri.parse(videoUrl));
-            mPlayerView.setVisibility(View.VISIBLE);
+            mPlayerContainer.setVisibility(View.VISIBLE);
             //release previous one, and hide player
         } else {
             if(mExoPlayer != null) {
                 releasePlayer();
             }
-            mPlayerView.setVisibility(View.INVISIBLE);
-            Snackbar sb = Snackbar.make(mLayout, "There is no video for this step!", Snackbar.LENGTH_LONG);
-            sb.show();
+            mPlayerContainer.setVisibility(View.INVISIBLE);
+            //if snackbar uses activity layout, it may return null
+                Snackbar sb = Snackbar.make(getActivity().findViewById(android.R.id.content), "There is no video for this step!", Snackbar.LENGTH_LONG);
+                sb.show();
         }
     }
 
@@ -221,26 +219,68 @@ public class RecipeStepDetailFragment extends Fragment {
         mExoPlayer = null;
     }
 
-    public int getPosition(){
-        return position;
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //hide objects
+            mButtonLayout.setVisibility(View.GONE);
+            mDescription.setVisibility(View.GONE);
+
+            //hide action bar
+            if(((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+            }
+
+            //change layout container for exoplayer view
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
+            params.width =  params.MATCH_PARENT;
+            params.height = params.MATCH_PARENT;
+            mPlayerView.setLayoutParams(params);
+
+            //make full screen and hide status bar
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //unhide objects
+            mButtonLayout.setVisibility(View.VISIBLE);
+            mDescription.setVisibility(View.VISIBLE);
+
+            //show action bar
+            if(((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+            }
+
+            //set layout params to be original dimensions
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
+            params.width =  params.MATCH_PARENT;
+            params.height = 350;
+            mPlayerView.setLayoutParams(params);
+
+            //show status bar
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(option.equals("ingredients")) {
-            outState.putString("ingredients", mDescription.getText().toString());
-        } else {
-            outState.putParcelableArrayList("steps", mSteps);
-            outState.putInt("position", position);
-            outState.putString("video", mVideo);
+        if(option != null) {
+            if (option.equals("ingredients")) {
+                outState.putString("ingredients", mDescription.getText().toString());
+            } else {
+                outState.putParcelableArrayList("steps", mSteps);
+                outState.putInt("position", position);
+                outState.putString("video", mVideo);
 
-            outState.putInt("currentWindow", mExoPlayer.getCurrentWindowIndex());
-            outState.putLong("playbackPosition", mExoPlayer.getCurrentPosition());
+                outState.putInt("currentWindow", mExoPlayer.getCurrentWindowIndex());
+                outState.putLong("playbackPosition", mExoPlayer.getCurrentPosition());
+            }
+
+            outState.putString("option", option);
         }
-
-        outState.putString("option", option);
     }
 
     @Override

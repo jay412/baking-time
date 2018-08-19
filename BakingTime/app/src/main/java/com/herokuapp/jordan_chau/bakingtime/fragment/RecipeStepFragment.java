@@ -18,16 +18,20 @@ import com.herokuapp.jordan_chau.bakingtime.model.Step;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.RecipeStepClickListener{
-    
-    private RecyclerView mRecipeStepList;
-    private RecipeStepAdapter mAdapter;
-    OnStepClickListener mCallback;
+
+    @BindView(R.id.rv_recipe_steps) RecyclerView mRecipeStepList;
+    @BindView(R.id.btn_recipe_step_ingredients) Button mIngredients;
+
+    private OnStepClickListener mCallback;
     private Button currentButton;
 
     public interface OnStepClickListener {
         void onStepSelected(int position);
-        void onInstructionSelected();
+        void onIngredientSelected();
     }
 
     @Override
@@ -41,7 +45,6 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         }
     }
 
-    private ArrayList<Step> mSteps;
     public RecipeStepFragment() {
 
     }
@@ -51,8 +54,7 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
-        //recycler view for recipe step
-        mRecipeStepList = rootView.findViewById(R.id.rv_recipe_steps);
+        ButterKnife.bind(this, rootView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecipeStepList.setLayoutManager(layoutManager);
@@ -64,18 +66,17 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
         }
         else {
             //step arraylist
-            mSteps = b.getParcelableArrayList("steps");
+            ArrayList<Step> mSteps = b.getParcelableArrayList("steps");
 
-            final Button mIngredients = rootView.findViewById(R.id.btn_recipe_step_ingredients);
             mIngredients.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallback.onInstructionSelected();
+                    mCallback.onIngredientSelected();
                     switchActiveButton(mIngredients);
                 }
             });
 
-        mAdapter = new RecipeStepAdapter(mSteps, this);
+            RecipeStepAdapter mAdapter = new RecipeStepAdapter(mSteps, this);
         mRecipeStepList.setAdapter(mAdapter);
         //some issues with recipes w/ 10+ steps
         currentButton = mIngredients;
@@ -106,9 +107,8 @@ public class RecipeStepFragment extends Fragment implements RecipeStepAdapter.Re
 
         RecyclerView.ViewHolder holder = mRecipeStepList.findViewHolderForAdapterPosition(position);
         if(holder != null) {
-            Button newButton = holder.itemView.findViewById(R.id.btn_short_description)
+            Button newButton = holder.itemView.findViewById(R.id.btn_short_description);
+            switchActiveButton(newButton);
         }
-
-        switchActiveButton((Button) view);
     }
 }

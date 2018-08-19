@@ -26,11 +26,9 @@ public class BakingTimeActivityTest {
     @Rule
     public ActivityTestRule<BakingTimeActivity> mActivityRule = new ActivityTestRule<>(BakingTimeActivity.class);
 
-    private IdlingResource mIdlingResource;
-
     @Before
     public void registerIdlingResource() {
-        mIdlingResource = mActivityRule.getActivity().getIdlingResource();
+        IdlingResource mIdlingResource = mActivityRule.getActivity().getIdlingResource();
         // check if idling resource needs to be registered
         // To prove that the test fails, omit this call: --> test still passes
        // Espresso.registerIdlingResources(mIdlingResource);

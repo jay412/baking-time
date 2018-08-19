@@ -16,7 +16,7 @@ public class Step implements Parcelable{
     }
 
     //Parcelable implemented methods & constructors
-    protected Step(Parcel in) {
+    private Step(Parcel in) {
         id = in.readInt();
         shortDescription = in.readString();
         description = in.readString();

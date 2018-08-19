@@ -15,10 +15,6 @@ import java.util.ArrayList;
 
 public class RecipeStepDetailActivity extends AppCompatActivity {
 
-    private RecipeStepDetailFragment detailFragment;
-    private String option;
-    private ArrayList<Step> mSteps;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,23 +35,19 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         if(intent.getStringExtra("option").equals("ingredients")) {
             ArrayList<Ingredient> mIngredients = intent.getParcelableArrayListExtra("ingredients");
 
-            //bundle.putString("option", "ingredients");
             bundle.putParcelableArrayList("ingredients", mIngredients);
-            option = "ingredients";
         } else {
-            mSteps = intent.getParcelableArrayListExtra("steps");
+            ArrayList<Step> mSteps = intent.getParcelableArrayListExtra("steps");
             int position = intent.getIntExtra("position", 0);
 
-            //bundle.putString("option", "steps");
             bundle.putParcelableArrayList("steps", mSteps);
             bundle.putInt("position", position);
 
-            option = "steps";
         }
 
         if(savedInstanceState == null) {
             //send arguments to fragment
-            detailFragment = new RecipeStepDetailFragment();
+            RecipeStepDetailFragment detailFragment = new RecipeStepDetailFragment();
             detailFragment.setArguments(bundle);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -76,14 +68,4 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        //TODO change button highlight
-        Intent intent = new Intent();
-        intent.putExtra("position", detailFragment.getPosition());
-        setResult(RESULT_OK, intent);
-        //Log.i("RSDA: ", "position = " + detailFragment.getPosition());
-
-        super.onDestroy();
-    }
 }
